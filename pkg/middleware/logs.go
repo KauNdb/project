@@ -15,7 +15,7 @@ func Loggin(next http.Handler) http.Handler {
 		next.ServeHTTP(wrapper, r)
 		log.SetFormatter(&log.JSONFormatter{})
 		log.WithFields(log.Fields{
-			"method":     r.Header,
+			"method":     r.Method,
 			"URL":        r.URL.Path,
 			"StatusCode": wrapper.StatusCode,
 		}).Info("Information about request and resposnse")

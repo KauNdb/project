@@ -14,7 +14,7 @@ func NewProductRepository(db *db.Db) *ProductRepository {
 
 func (repo *ProductRepository) Create(product *Product) (*Product, error) {
 	result := repo.DataBase.DB.Create(product)
-	if result != nil {
+	if result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -23,7 +23,7 @@ func (repo *ProductRepository) Create(product *Product) (*Product, error) {
 
 func (repo *ProductRepository) Update(product *Product) (*Product, error) {
 	result := repo.DataBase.DB.Updates(product)
-	if result != nil {
+	if result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -32,7 +32,7 @@ func (repo *ProductRepository) Update(product *Product) (*Product, error) {
 
 func (repo *ProductRepository) Delete(id uint) error {
 	result := repo.DataBase.DB.Delete(&Product{}, id)
-	if result != nil {
+	if result.Error != nil {
 		return result.Error
 	}
 
@@ -42,7 +42,7 @@ func (repo *ProductRepository) Delete(id uint) error {
 func (repo *ProductRepository) GetById(id uint) (*Product, error) {
 	var product Product
 	result := repo.DataBase.DB.First(&product, id)
-	if result != nil {
+	if result.Error != nil {
 		return nil, result.Error
 	}
 

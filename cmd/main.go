@@ -6,15 +6,22 @@ import (
 	"project/configs"
 	"project/db"
 	"project/internal/auth"
+	"project/internal/product"
 )
 
 func main() {
 	router := http.NewServeMux()
 	cfg := configs.LoadConfig()
-	_ = db.NewDb(cfg)
+	db := db.NewDb(cfg)
+	productRepository := product.NewProductRepository(db)
+
 	auth.NewHandler(router, auth.AuthHandlerDeps{
 		Config: cfg,
 	})
+	product.NewProductHandler(router, product.ProductHandlerDeps{
+		ProductRepository: productRepository,
+	})
+
 	server := http.Server{
 		Addr:    ":8081",
 		Handler: router,

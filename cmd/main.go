@@ -15,9 +15,10 @@ func main() {
 	cfg := configs.LoadConfig()
 	db := db.NewDb(cfg)
 	productRepository := product.NewProductRepository(db)
-
+	authRepository := auth.NewAuthRepository(db)
 	auth.NewHandler(router, auth.AuthHandlerDeps{
-		Config: cfg,
+		Config:         cfg,
+		AuthRepository: authRepository,
 	})
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,

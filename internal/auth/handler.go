@@ -1,11 +1,14 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 	"project/configs"
 	"project/pkg/jwt"
 	"project/pkg/req"
 	"project/pkg/res"
+
+	"gorm.io/gorm"
 )
 
 type AuthHandlerDeps struct {
@@ -33,8 +36,8 @@ func (handler *Handler) Phone() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		phone, _ := handler.AuthRepository.GetPhone(body.Phone)
-		if phone == nil {
+		err = handler.AuthRepository.GetPhone(body.Phone)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			newPhone := NewPhone(body.Phone)
 			createdPhone, err := handler.AuthRepository.CreatePhone(newPhone)
 			if err != nil {
@@ -44,8 +47,12 @@ func (handler *Handler) Phone() http.HandlerFunc {
 			resp := PhoneResponse{
 				SessionId: createdPhone.SessionId,
 			}
-
 			res.Json(w, resp, http.StatusCreated)
+			return
+		}
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		updatedPhone := NewPhone(body.Phone)
 		newUpdatedPhone, err := handler.AuthRepository.UpatePhone(updatedPhone)

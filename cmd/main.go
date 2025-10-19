@@ -7,7 +7,6 @@ import (
 	"project/db"
 	"project/internal/auth"
 	"project/internal/product"
-	"project/pkg/middleware"
 )
 
 func main() {
@@ -22,11 +21,12 @@ func main() {
 	})
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,
+		Config:            cfg,
 	})
 
 	server := http.Server{
 		Addr:    ":8081",
-		Handler: middleware.Loggin(router),
+		Handler: router,
 	}
 
 	fmt.Println("Server is listening on port 8081...")

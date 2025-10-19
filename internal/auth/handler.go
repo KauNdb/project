@@ -78,7 +78,9 @@ func (handler *Handler) PhoneCode() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		token, err := jwt.NewJWT(handler.Config.Auth.Secret).Create(phone.SessionId)
+		token, err := jwt.NewJWT(handler.Config.Auth.Secret).Create(jwt.JWTData{
+			Phone: phone.Phone,
+		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

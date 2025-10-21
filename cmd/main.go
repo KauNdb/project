@@ -6,6 +6,7 @@ import (
 	"project/configs"
 	"project/db"
 	"project/internal/auth"
+	"project/internal/order"
 	"project/internal/product"
 )
 
@@ -13,8 +14,12 @@ func main() {
 	router := http.NewServeMux()
 	cfg := configs.LoadConfig()
 	db := db.NewDb(cfg)
+	// Repository
 	productRepository := product.NewProductRepository(db)
 	authRepository := auth.NewAuthRepository(db)
+	orderRepositopry := order.NewOrderRepository(db)
+
+	// Handlers
 	auth.NewHandler(router, auth.AuthHandlerDeps{
 		Config:         cfg,
 		AuthRepository: authRepository,
@@ -22,6 +27,10 @@ func main() {
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,
 		Config:            cfg,
+	})
+	order.NewOrderHandler(router, order.OrderHandlerDeps{
+		OrderRepository: orderRepositopry,
+		Config:          cfg,
 	})
 
 	server := http.Server{

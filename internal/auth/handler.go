@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"project/configs"
 	"project/pkg/jwt"
@@ -36,7 +37,7 @@ func (handler *Handler) Phone() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		err = handler.AuthRepository.GetPhone(body.Phone)
+		id, err := handler.AuthRepository.GetPhone(body.Phone)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			newPhone := NewPhone(body.Phone)
 			createdPhone, err := handler.AuthRepository.CreatePhone(newPhone)
@@ -51,6 +52,7 @@ func (handler *Handler) Phone() http.HandlerFunc {
 			return
 		}
 		if err != nil {
+			fmt.Println("Error Id: ", id)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

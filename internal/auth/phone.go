@@ -2,15 +2,17 @@ package auth
 
 import (
 	"math/rand"
+	"project/internal/order"
 
 	"gorm.io/gorm"
 )
 
 type Phone struct {
 	gorm.Model
-	Phone     string `json:"phone"`
-	SessionId string `json:"session_id"`
-	Code      int    `json:"code"`
+	Phone     string        `json:"phone"`
+	SessionId string        `json:"session_id"`
+	Code      int           `json:"code"`
+	Orders    []order.Order `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func NewPhone(phone string) *Phone {

@@ -30,14 +30,14 @@ func (authRepo *AuthRepository) UpatePhone(phone *Phone) (*Phone, error) {
 	return phone, nil
 }
 
-func (authRepo *AuthRepository) GetPhone(phoneNum string) error {
+func (authRepo *AuthRepository) GetPhone(phoneNum string) (*Phone, error) {
 	var phone Phone
 	result := authRepo.DataBase.DB.First(&phone, "phone = ?", phoneNum)
 	if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
 
-	return nil
+	return &phone, nil
 }
 
 func (authRepo *AuthRepository) GetPhoneByCode(sessionId string, code int) (*Phone, error) {

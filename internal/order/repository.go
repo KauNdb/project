@@ -18,7 +18,7 @@ func NewOrderRepository(db *db.Db) *OrderRepository {
 func (repo *OrderRepository) CreateOrder(phoneId uint, products []string) (uint, error) {
 	var productsSlice []product.Product
 	var getProduct product.Product
-	for product := range products {
+	for _, product := range products {
 		result := repo.DataBase.DB.First(&getProduct, "name = ?", product)
 		if result.Error != nil {
 			return 0, result.Error
@@ -38,7 +38,7 @@ func (repo *OrderRepository) CreateOrder(phoneId uint, products []string) (uint,
 
 func (repo *OrderRepository) GetOrderById(orderId uint) (*Order, error) {
 	var order Order
-	result := repo.DataBase.DB.First(&order, orderId)
+	result := repo.DataBase.DB.Preload("Products").First(&order, orderId)
 	if result.Error != nil {
 		return nil, result.Error
 	}

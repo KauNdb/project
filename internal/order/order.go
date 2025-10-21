@@ -9,5 +9,5 @@ import (
 type Order struct {
 	gorm.Model
 	PhoneId  uint              `json:"phone_id"`
-	Products []product.Product `json:"products" gorm:"many2many:user_roles;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Products []product.Product `json:"products" gorm:"many2many:order_products;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
